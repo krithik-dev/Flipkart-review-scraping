@@ -1,9 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+import matplotlib.pyplot as plt
+from wordcloud import STOPWORDS, WordCloud
 
 main_url = "https://www.flipkart.com/cmf-nothing-buds-pro-2-50-db-anc-hi-res-ldac-smart-dial-spatial-audio-dual-drivers-bluetooth/product-reviews/itm30c0d780a4c6c?pid=ACCHFZ2FPSFBD9UT&lid=LSTACCHFZ2FPSFBD9UTMQZQP0&marketplace=FLIPKART"
-
+stopwords = STOPWORDS
 
 all_positive_comments = ""
 all_negative_comments = ""
@@ -66,6 +68,15 @@ def scrape_negative_pages(num_pages, filename):
     for page_num in range(1, num_pages + 1):
         scrape_negative_reviews(page_num, filename)
 
+def wordcloud_positive():
+    wc = WordCloud(background_color="white", stopwords=stopwords, height=700, width=500)
+    wc.generate(all_positive_comments)
+    wc.to_file("wordcloud_positive.png")
+
+def wordcloud_negative():
+    wc = WordCloud(background_color="white", stopwords=stopwords, height=700, width=500)
+    wc.generate(all_negative_comments)
+    wc.to_file("wordcloud_negative.png")
 
 num_pages_to_scrape = int(input("Enter the number of pages to scrape from the URL: "))
 
@@ -77,6 +88,8 @@ scrape_negative_pages(num_pages_to_scrape, 'negative_reviews.csv')
 
 print("\nScraping complete.")
 
+print("Wordcloud created for Positive review")
+wordcloud_positive()
 
-print("\nAll Positive Comments:\n", all_positive_comments)
-print("\nAll Negative Comments:\n", all_negative_comments)
+print("Wordcloud created for Negative review")
+wordcloud_negative()
