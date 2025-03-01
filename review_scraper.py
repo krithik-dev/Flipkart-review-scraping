@@ -4,9 +4,14 @@ import csv
 
 main_url = "https://www.flipkart.com/cmf-nothing-buds-pro-2-50-db-anc-hi-res-ldac-smart-dial-spatial-audio-dual-drivers-bluetooth/product-reviews/itm30c0d780a4c6c?pid=ACCHFZ2FPSFBD9UT&lid=LSTACCHFZ2FPSFBD9UTMQZQP0&marketplace=FLIPKART"
 
-def scrape_positive_reviews(page_num, filename):
-    url = f'{main_url}&page={page_num}&sortOrder=POSITIVE_FIRST'
 
+all_positive_comments = ""
+all_negative_comments = ""
+
+def scrape_positive_reviews(page_num, filename):
+    global all_positive_comments
+    
+    url = f'{main_url}&page={page_num}&sortOrder=POSITIVE_FIRST'
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -18,15 +23,19 @@ def scrape_positive_reviews(page_num, filename):
         writer = csv.writer(file)
         if file.tell() == 0:
             writer.writerow(['Star', 'Paragraph', 'Comment'])
+        
         for star, paragraph, comment in zip(stars, paragraphs, comments):
-            writer.writerow([star.text.strip(), paragraph.text.strip(), comment.text.strip()])
+            review_text = comment.text.strip()
+            all_positive_comments += review_text + " " 
+            writer.writerow([star.text.strip(), paragraph.text.strip(), review_text])
 
     print(f"Data from page {page_num} for positive reviews has been successfully written to {filename}")
 
 
 def scrape_negative_reviews(page_num, filename):
-    url = f'{main_url}&page={page_num}&sortOrder=NEGATIVE_FIRST'
+    global all_negative_comments
 
+    url = f'{main_url}&page={page_num}&sortOrder=NEGATIVE_FIRST'
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -41,7 +50,9 @@ def scrape_negative_reviews(page_num, filename):
             writer.writerow(['Star', 'Paragraph', 'Comment'])
 
         for star, paragraph, comment in zip(stars, paragraphs, comments):
-            writer.writerow([star.text.strip(), paragraph.text.strip(), comment.text.strip()])
+            review_text = comment.text.strip()
+            all_negative_comments += review_text + " "  
+            writer.writerow([star.text.strip(), paragraph.text.strip(), review_text])
 
     print(f"Data from page {page_num} for negative reviews has been successfully written to {filename}")
 
@@ -50,12 +61,13 @@ def scrape_positive_pages(num_pages, filename):
     for page_num in range(1, num_pages + 1):
         scrape_positive_reviews(page_num, filename)
 
+
 def scrape_negative_pages(num_pages, filename):
     for page_num in range(1, num_pages + 1):
         scrape_negative_reviews(page_num, filename)
 
 
-num_pages_to_scrape = int(input("Enter the number of pages to scrape from the url: "))
+num_pages_to_scrape = int(input("Enter the number of pages to scrape from the URL: "))
 
 print("Scraping positive reviews...")
 scrape_positive_pages(num_pages_to_scrape, 'positive_reviews.csv')
@@ -63,4 +75,8 @@ scrape_positive_pages(num_pages_to_scrape, 'positive_reviews.csv')
 print("Scraping negative reviews...")
 scrape_negative_pages(num_pages_to_scrape, 'negative_reviews.csv')
 
-print("Scraping complete.")
+print("\nScraping complete.")
+
+
+print("\nAll Positive Comments:\n", all_positive_comments)
+print("\nAll Negative Comments:\n", all_negative_comments)
