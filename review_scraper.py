@@ -55,7 +55,7 @@ def scrape_negative_pages(num_pages, filename):
         scrape_negative_reviews(page_num, filename)
 
 
-num_pages_to_scrape = int(input("Enter the number of pages to scrape: "))
+num_pages_to_scrape = int(input("Enter the number of pages to scrape from the url: "))
 
 print("Scraping positive reviews...")
 scrape_positive_pages(num_pages_to_scrape, 'positive_reviews.csv')
