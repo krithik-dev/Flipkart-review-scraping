@@ -4,6 +4,7 @@ import csv
 import matplotlib.pyplot as plt
 from wordcloud import STOPWORDS, WordCloud
 
+
 main_url = "https://www.flipkart.com/cmf-nothing-buds-pro-2-50-db-anc-hi-res-ldac-smart-dial-spatial-audio-dual-drivers-bluetooth/product-reviews/itm30c0d780a4c6c?pid=ACCHFZ2FPSFBD9UT&lid=LSTACCHFZ2FPSFBD9UTMQZQP0&marketplace=FLIPKART"
 stopwords = STOPWORDS
 
@@ -93,3 +94,4 @@ wordcloud_positive()
 
 print("Wordcloud created for Negative review")
 wordcloud_negative()
+
